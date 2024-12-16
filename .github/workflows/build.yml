@@ -1,0 +1,27 @@
+name: build-main
+run-name: build-main
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # every day at midnight
+    - cron: 0 0 * * *
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # permissions:
+    #   contents: write
+    name: download and save data
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+
+      - run: pip install requests
+
+      - run: python3 prepare_parcels.py
+
+      # Commit all changed files back to the repository
+      # - uses: stefanzweifel/git-auto-commit-action@v5
