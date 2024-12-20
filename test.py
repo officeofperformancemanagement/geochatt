@@ -5,6 +5,13 @@ import geochatt
 
 
 class TestCityHall(unittest.TestCase):
+    def test_get_parcel(self):
+        result = geochatt.get_parcel(address="101 E 11TH ST")
+        self.assertEqual(
+            result,
+            "POLYGON ((-85.3069572 35.043897, -85.3074818 35.0440926, -85.3075952 35.0438743, -85.3078311 35.0434433, -85.3073192 35.0432494, -85.3069718 35.0438707, -85.3069572 35.043897))",
+        )
+
     def test_get_address(self):
         result = geochatt.get_address(latitude=35.0432979, longitude=-85.3076591)
         self.assertEqual(result, "101 E 11TH ST")

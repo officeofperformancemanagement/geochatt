@@ -74,3 +74,22 @@ def get_address(longitude, latitude, max_distance=0.0001):
     nearest_geom = parcel_strtree["value"].geometries.take(index)
     if point.distance(nearest_geom) <= max_distance:
         return parcel_strtree["geoms"][nearest_geom]
+
+
+# Description
+# - Returns the geometry of the parcel associated with a given address.
+# Accepts
+# - address: str
+# Returns
+# - parcel: str
+def get_parcel(address):
+    # Open the parcel data file
+    with gzip.open(
+        os.path.join(directory, "live_parcels.csv.gz"), "rt", newline=""
+    ) as f:
+        # Read each row and compare its address to the target
+        for row in csv.DictReader(f):
+            if row["ADDRESS"]:
+                if row["ADDRESS"] == address:
+                    # Return the target address's parcel geometry
+                    return row["geometry"]
