@@ -82,6 +82,8 @@ cardinal_directions = {
     "SOUTH": "S", "SOUTHWEST": "SW", "WEST": "W", "NORTHWEST": "NW"
 }
 # Create dictionary that contains all USPS street suffixes and their abbreviations
+# Does not include suffixes that are not abbreviated (i.e., "ROW")
+# Link to information: https://pe.usps.com/text/pub28/28apc_002.htm
 street_suffixes = {
     "ALLEY": "ALY", "ANNEX": "ANX", "ARCADE": "ARC", "AVENUE": "AVE", "BAYOU": "BYU", "BEACH": "BCH", 
     "BEND": "BND", "BLUFF": "BLF", "BLUFFS": "BLFS", "BOTTOM": "BTM", "BOULEVARD": "BLVD", "BRANCH": "BR", 
@@ -92,32 +94,32 @@ street_suffixes = {
     "COVE": "CV", "COVES": "CVS", "CREEK": "CRK", "CRESCENT": "CRES", "CREST": "CRST", "CROSSING": "XING", 
     "CROSSROAD": "XRD", "CROSSROADS": "XRDS", "CURVE": "CURV", "DALE": "DL", "DAM": "DM", "DIVIDE": "DV", 
     "DRIVE": "DR", "DRIVES": "DRS", "ESTATE": "EST", "ESTATES": "ESTS", "EXPRESSWAY": "EXPY", 
-    "EXTENSION": "EXT", "EXTENSIONS": "EXTS", "FALL": "FALL", "FALLS": "FLS", "FERRY": "FRY", "FIELD": "FLD", 
+    "EXTENSION": "EXT", "EXTENSIONS": "EXTS", "FALLS": "FLS", "FERRY": "FRY", "FIELD": "FLD", 
     "FIELDS": "FLDS", "FLAT": "FLT", "FLATS": "FLTS", "FORD": "FRD", "FORDS": "FRDS", "FOREST": "FRST", 
     "FORGE": "FRG", "FORGES": "FRGS", "FORK": "FRK", "FORKS": "FRKS", "FORT": "FT", "FREEWAY": "FWY", 
     "GARDEN": "GDN", "GARDENS": "GDNS", "GATEWAY": "GTWY", "GLEN": "GLN", "GLENS": "GLNS", "GREEN": "GRN", 
     "GREENS": "GRNS", "GROVE": "GRV", "GROVES": "GRVS", "HARBOR": "HBR", "HARBORS": "HBRS", "HAVEN": "HVN", 
     "HEIGHTS": "HTS", "HIGHWAY": "HWY", "HILL": "HL", "HILLS": "HLS", "HOLLOW": "HOLW", "INLET": "INLT", 
-    "ISLAND": "IS", "ISLANDS": "ISS", "ISLE": "ISLE", "JUNCTION": "JCT", "JUNCTIONS": "JCTS", "KEY": "KY", 
-    "KEYS": "KYS", "KNOLL": "KNL", "LAKE": "LK", "LAKES": "LKS", "LAND": "LAND", "LANDING": "LNDG", 
+    "ISLAND": "IS", "ISLANDS": "ISS", "JUNCTION": "JCT", "JUNCTIONS": "JCTS", "KEY": "KY", 
+    "KEYS": "KYS", "KNOLL": "KNL", "LAKE": "LK", "LAKES": "LKS", "LANDING": "LNDG", 
     "LANE": "LN", "LIGHT": "LGT", "LIGHTS": "LGTS", "LOAF": "LF", "LOCK": "LCK", "LOCKS": "LCKS", 
-    "LODGE": "LDG", "LOOP": "LOOP", "MALL": "MALL", "MANOR": "MNR", "MANORS": "MNRS", "MEADOW": "MDW", 
-    "MEADOWS": "MDWS", "MEWS": "MEWS", "MILL": "ML", "MILLS": "MLS", "MISSION": "MSN", "MOTORWAY": "MTWY", 
-    "MOUNT": "MT", "MOUNTAIN": "MTN", "MOUNTAINS": "MTNS", "NECK": "NCK", "ORCHARD": "ORCH", "OVAL": "OVAL", 
-    "OVERPASS": "OPAS", "PARK": "PARK", "PARKS": "PARK", "PARKWAY": "PKWY", "PARKWAYS": "PKWY", 
-    "PASS": "PASS", "PASSAGE": "PSGE", "PATH": "PATH", "PIKE": "PIKE", "PINE": "PNE", "PINES": "PNES", 
+    "LODGE": "LDG", "MANOR": "MNR", "MANORS": "MNRS", "MEADOW": "MDW", 
+    "MEADOWS": "MDWS", "MILL": "ML", "MILLS": "MLS", "MISSION": "MSN", "MOTORWAY": "MTWY", 
+    "MOUNT": "MT", "MOUNTAIN": "MTN", "MOUNTAINS": "MTNS", "NECK": "NCK", "ORCHARD": "ORCH", 
+    "OVERPASS": "OPAS", "PARKS": "PARK", "PARKWAY": "PKWY", "PARKWAYS": "PKWY", 
+    "PASSAGE": "PSGE", "PINE": "PNE", "PINES": "PNES", 
     "PL": "PLACE", "PLAIN": "PLN", "PLAINS": "PLNS", "PLAZA": "PLZ", "POINT": "PT", "POINTS": "PTS", 
-    "PORT": "PRT", "PORTS": "PRTS", "PRAIRIE": "PR", "RADIAL": "RADL", "RAMP": "RAMP", "RANCH": "RNCH", 
+    "PORT": "PRT", "PORTS": "PRTS", "PRAIRIE": "PR", "RADIAL": "RADL", "RANCH": "RNCH", 
     "RAPID": "RPD", "RAPIDS": "RPDS", "REST": "RST", "RIDGE": "RDG", "RIDGES": "RDGS", "RIVER": "RIV", 
-    "ROAD": "RD", "ROADS": "RDS", "ROUTE": "RTE", "ROW": "ROW", "RUE": "RUE", "RUN": "RUN", "SHOAL": "SHL", 
+    "ROAD": "RD", "ROADS": "RDS", "ROUTE": "RTE", "SHOAL": "SHL", 
     "SHOALS": "SHLS", "SHORE": "SHR", "SHORES": "SHRS", "SKYWAY": "SKWY", "SPRING": "SPG", 
-    "SPRINGS": "SPGS", "SPUR": "SPUR", "SPURS": "SPUR", "SQUARE": "SQ", "SQUARES": "SQS", "STATION": "STA", 
+    "SPRINGS": "SPGS", "SPURS": "SPUR", "SQUARE": "SQ", "SQUARES": "SQS", "STATION": "STA", 
     "STRAVENUE": "STRA", "STREAM": "STRM", "STREET": "ST", "STREETS": "STS", "SUMMIT": "SMT", 
     "TERRACE": "TER", "THROUGHWAY": "TRWY", "TRACE": "TRCE", "TRACK": "TRAK", "TRAFFICWAY": "TRFY", 
     "TRAIL": "TRL", "TRAILER": "TRLR", "TUNNEL": "TUNL", "TURNPIKE": "TPKE", "UNDERPASS": "UPAS", 
     "UNION": "UN", "UNIONS": "UNS", "VALLEY": "VLY", "VALLEYS": "VLYS", "VIADUCT": "VIA", "VIEW": "VW", 
-    "VIEWS": "VWS", "VILLAGE": "VLG", "VILLAGES": "VLGS", "VILLE": "VL", "VISTA": "VIS", "WALK": "WALK", 
-    "WALKS": "WALK", "WALL": "WALL", "WAY": "WAY", "WAYS": "WAYS", "WELL": "WL", "WELLS": "WLS"
+    "VIEWS": "VWS", "VILLAGE": "VLG", "VILLAGES": "VLGS", "VILLE": "VL", "VISTA": "VIS", 
+    "WALKS": "WALK", "WELL": "WL", "WELLS": "WLS"
 }
 
 
@@ -133,16 +135,19 @@ def get_parcel(address):
     # Make a list of acceptable address strings - ["EAST 11TH STREET", "E 11TH STREET"], for example
     acceptable = [check_addr]
     # Check the input string for each of the cardinal directions
+    dir_normalized = None
     for dir, abbrev in cardinal_directions.items():
         if dir in check_addr:
             # Replace the first instance of the direction with its abbreviation
             dir_normalized = check_addr.replace(dir, abbrev, 1)
         # If this dir isn't in check_addr and dir_normalized hasn't been set:
-        elif "dir_normalized" not in locals():
+        elif dir_normalized is None:
             # Set it to check_addr for later - will be replaced if some direction is found, else left alone
             dir_normalized = check_addr
     # Check if the working "normalized" string's street suffix is spelled out (Ex: "DRIVE")
-    split_by_word = dir_normalized.split()
+    # Set normalized to dir_normalized for now - if suffix can be abbreviated, this will be replaced
+    normalized = dir_normalized
+    split_by_word = normalized.split()
     for suffix, shorthand in street_suffixes.items():
         if split_by_word[-1] == suffix:
             # Replace the full suffix with the shorthand version (Ex: "DRIVE" -> "DR")
