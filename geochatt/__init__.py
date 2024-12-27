@@ -165,3 +165,18 @@ def get_parcel(address):
                 if row["ADDRESS"] in acceptable:
                     # Return the target address's parcel geometry
                     return row["geometry"]
+
+
+# Description
+# - Returns the centroid of the parcel located at the input address
+# Accepts
+# - address: str; the street address
+# Returns
+# - centroid: shapely.Point; Point with x (longitude) and y (latitude) coordinates that represents centroid
+def get_parcel_centroid(address):
+    # First, get the parcel's polygon in WKT (string) format
+    parcel = get_parcel(address)
+    # Then, create a Shapely polygon with the output
+    polygon = from_wkt(parcel)
+    # Take Shapely's centroid attribute from the polygon and return it
+    return polygon.centroid
