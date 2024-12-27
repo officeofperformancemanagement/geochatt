@@ -5,6 +5,10 @@ import geochatt
 
 
 class TestCityHall(unittest.TestCase):
+    def test_get_parcel_centroid(self):
+            result = geochatt.get_parcel_centroid(address="101 EAST 11TH ST")
+            print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
+
     def test_get_parcel(self):
         result = geochatt.get_parcel(address="101 east 11th street")
         self.assertEqual(
