@@ -7,7 +7,15 @@ import geochatt
 class TestCityHall(unittest.TestCase):
     def test_get_parcel_centroid(self):
             result = geochatt.get_parcel_centroid(address="101 EAST 11TH ST")
-            print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
+            # Please Note: The centroid is printed so that its coordinates can be validated on geojson.io.
+            # Here is a link to the website: https://geojson.io/#map=2/0/20
+            # Go to Chattanooga Municipal Building (address above), click the teardrop-shaped icon on the right,
+            # and click in the middle of the property. The coordinates should be similar--not like a degree off.
+            # print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
+            # Test each point to see if results match previous tests
+            # These were the results collected in December of 2024, so changes to shapely could cause them to be unequal
+            self.assertEqual(result.x, -85.30739570641228)
+            self.assertEqual(result.y, 35.0436712625469)
 
     def test_get_parcel(self):
         result = geochatt.get_parcel(address="101 east 11th street")
