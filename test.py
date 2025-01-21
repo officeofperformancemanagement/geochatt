@@ -56,6 +56,8 @@ class TestPerformance(unittest.TestCase):
             x = xmin + random.random() * xrange
             y = ymin + random.random() * yrange
             geochatt.get_address(longitude=x, latitude=y)
+            geochatt.get_parcel("101 E 11TH ST")
+            
 
 
 if __name__ == "__main__":

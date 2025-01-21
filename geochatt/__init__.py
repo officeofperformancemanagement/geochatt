@@ -76,6 +76,16 @@ def get_address(longitude, latitude, max_distance=0.0001):
         return parcel_strtree["geoms"][nearest_geom]
 
 
+# Create Dict that has addresses as keys and parcels as values
+parcels = {}
+with gzip.open(
+    os.path.join(directory, "live_parcels.csv.gz"), "rt", newline=""
+) as f:
+    # Get address, parcel from each row and put them in Dict as key, value
+    for row in csv.DictReader(f):
+        if row["ADDRESS"]:
+            parcels[row["ADDRESS"]] = row["geometry"]
+
 # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
 cardinal_directions = {
     "NORTH": "N", "NORTHEAST": "NE", "EAST": "E", "SOUTHEAST": "SE", 
@@ -122,7 +132,6 @@ street_suffixes = {
     "WALKS": "WALK", "WELL": "WL", "WELLS": "WLS"
 }
 
-
 # Description
 # - Returns the geometry of the parcel associated with a given address.
 # Accepts
@@ -155,16 +164,10 @@ def get_parcel(address):
     # Append the normalized address string to the "acceptable" list
     acceptable.append(normalized)
     # For debugging: print("ACCEPTABLE LIST: ", acceptable)
-    # Open the parcel data file
-    with gzip.open(
-        os.path.join(directory, "live_parcels.csv.gz"), "rt", newline=""
-    ) as f:
-        # Read each row and compare its address to the target
-        for row in csv.DictReader(f):
-            if row["ADDRESS"]:
-                if row["ADDRESS"] in acceptable:
-                    # Return the target address's parcel geometry
-                    return row["geometry"]
+    # Grab the parcel associated with address from "parcels" Dict
+    for addr in acceptable:
+        if addr in parcels:
+            return parcels[addr]
 
 
 # Description
