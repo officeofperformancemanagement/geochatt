@@ -11,3 +11,6 @@ curl --output "./geochatt/city_council_districts.geojson" "https://www.chattadat
 
 # download parcels
 python prepare_parcels.py
+
+# download neighborhoods
+python prepare_neighborhoods.py
