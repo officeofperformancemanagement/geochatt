@@ -183,3 +183,42 @@ def get_parcel_centroid(address):
     polygon = from_wkt(parcel)
     # Take Shapely's centroid attribute from the polygon and return it
     return polygon.centroid
+
+
+# "value" is reference to STRTree, "geoms" matches boundary with name of neighborhood
+neighborhood_strtree = {"value": None, "geoms": {}}
+
+
+# Description
+# - Returns the neighborhood associations that the input coordinates' point is in, if applicable.
+# Accepts
+# - longitude: the longitude (y-) coordinate of the input point (can be raw number or string)
+# - latitude: the latitude (x-) coordinate of the input point (can be raw number or string)
+# Returns
+# - neighborhoods (list of str): the names of the neighborhood associations - empty if N/A
+def get_neighborhood_associations(longitude, latitude):
+    # Load address index for tree upon first run of the function
+    if neighborhood_strtree["value"] is None:
+        with gzip.open(
+            os.path.join(directory, "neighborhoods.csv.gz"), "rt", newline=""
+        ) as f:
+            # Fill "geoms" dictionary with data from CSV in the format of "boundary": name
+            for row in csv.DictReader(f):
+                geom = from_wkt(row["boundary"])
+                if row["name"]:
+                    neighborhood_strtree["geoms"][geom] = row["name"]
+            # Create the STRtree and store the reference to it in "value" for later use
+            neighborhood_strtree["value"] = STRtree(
+                [geom for geom, name in neighborhood_strtree["geoms"].items()]
+            )
+    
+    # Make a Shapely Point out of the input coordinates
+    point = Point(longitude, latitude)
+    # Grab index of all geometries (neighborhood associations) that the point intersects
+    neighborhood_indices = neighborhood_strtree["value"].query(point, predicate="intersects")
+    # Grab actual geometries of neighborhoods intersecting point and store them in list
+    neighborhood_geometries = [neighborhood_strtree["value"].geometries[index] for index in neighborhood_indices]
+    # Create the list of neighborhoods associated with the point by indexing "geoms" with neighborhood geoms
+    neighborhoods = [neighborhood_strtree["geoms"][g] for g in neighborhood_geometries]
+    # Return result
+    return neighborhoods

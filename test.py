@@ -3,8 +3,12 @@ import unittest
 
 import geochatt
 
-
 class TestCityHall(unittest.TestCase):
+    # City Hall coordinates: 35.04379983455412, -85.30815077048146
+    def test_get_neighborhood_associations(self):
+        result = geochatt.get_neighborhood_associations(longitude="-85.30815077048146", latitude="35.04379983455412")
+        self.assertEqual(result, ["Martin Luther King Neighborhood Association"])
+    
     def test_get_parcel_centroid(self):
             result = geochatt.get_parcel_centroid(address="101 EAST 11TH ST")
             # Please Note: The centroid is printed so that its coordinates can be validated on geojson.io.
@@ -57,6 +61,7 @@ class TestPerformance(unittest.TestCase):
             y = ymin + random.random() * yrange
             geochatt.get_address(longitude=x, latitude=y)
             geochatt.get_parcel("101 E 11TH ST")
+            geochatt.get_neighborhood_associations(longitude="-85.30815077048146", latitude="35.04379983455412")
             
 
 
