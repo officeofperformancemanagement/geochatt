@@ -4,6 +4,14 @@ import unittest
 import geochatt
 
 class TestCityHall(unittest.TestCase):
+    def test_get_intersection_coordinates(self):
+        # Test a real intersection - 11th St and Market St
+        result = geochatt.get_intersection_coordinates(name="11th St at Market St")        
+        self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
+        # Test where I-75 passes over Hickory Valley Road (not an intersection, but looks like one on the map)
+        result = geochatt.get_intersection_coordinates(name="Exit Interstate 75 Off Ramp & Hickory Valley Rd")        
+        self.assertEqual(result, None)
+
     # City Hall coordinates: 35.04379983455412, -85.30815077048146
     def test_get_neighborhood_associations(self):
         result = geochatt.get_neighborhood_associations(longitude="-85.30815077048146", latitude="35.04379983455412")
@@ -62,8 +70,8 @@ class TestPerformance(unittest.TestCase):
             geochatt.get_address(longitude=x, latitude=y)
             geochatt.get_parcel("101 E 11TH ST")
             geochatt.get_neighborhood_associations(longitude="-85.30815077048146", latitude="35.04379983455412")
+            geochatt.get_intersection_coordinates(name="11th St & Market St")
+
             
-
-
 if __name__ == "__main__":
     unittest.main()

@@ -222,3 +222,33 @@ def get_neighborhood_associations(longitude, latitude):
     neighborhoods = [neighborhood_strtree["geoms"][g] for g in neighborhood_geometries]
     # Return result
     return neighborhoods
+
+
+# Open the intersections.csv.gz file and grab the first (and only) row containing the intersection data
+with gzip.open(
+    os.path.join(directory, "intersections.csv.gz"), "rt", newline=""
+) as f:
+    r = csv.DictReader(f)
+    intersections = next(r)
+
+
+# Description
+# - Returns the longitude and latitude coordinates for a specified intersection (ex: "11th St & Market St")
+# Accepts
+# - name (string): the name of the streets/roads that intersect, in the format of "[Street1] & [Street2]"
+# Returns
+# - coordinates (list of numbers): the longitude (x-) and latitude (y-) coordinates of the intersection
+# Note
+# - return value will be None if the specified intersection can not be found
+def get_intersection_coordinates(name):
+    # Allow the user to input "at" instead of "&" by standardizing their input to "&"
+    if len(name.split(" at ")) != 0:
+        name = name.replace(" at ", " & ")
+    coordinates = []
+    # Access intersection coords using name as key into intersections dictionary
+    if name in intersections:
+        intersection = from_wkt(intersections[name])
+        coordinates.append(intersection.x)
+        coordinates.append(intersection.y)
+        # Return list with coordinates
+        return coordinates
