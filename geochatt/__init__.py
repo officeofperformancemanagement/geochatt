@@ -242,8 +242,11 @@ with gzip.open(
 # - return value will be None if the specified intersection can not be found
 def get_intersection_coordinates(name):
     # Allow the user to input "at" instead of "&" by standardizing their input to "&"
-    if len(name.split(" at ")) != 0:
+    if name.count(" at ") != 0:
         name = name.replace(" at ", " & ")
+    elif name.count(" and ") != 0:
+        name = name.replace(" and ", " & ")
+
     coordinates = []
     # Access intersection coords using name as key into intersections dictionary
     if name in intersections:
