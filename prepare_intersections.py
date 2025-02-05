@@ -19,9 +19,6 @@ all of the data.
 # Used to access results beyond the first 2,000 - increment by 2,000 upon each iteration of the loop
 result_offset = 0
 
-# Create list of rows (dictionaries) to write to CSV
-output = []
-
 # Create dictionary with geometries as keys and their names as values
 line_strings = {}
 
