@@ -6,7 +6,7 @@ import geochatt
 class TestCityHall(unittest.TestCase):
     def test_get_intersection_coordinates(self):
         # Test a real intersection - 11th St and Market St
-        result = geochatt.get_intersection_coordinates(name="11th St and Market St")        
+        result = geochatt.get_intersection_coordinates(name="Market St and 11th St")        
         self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
         # Test where I-75 passes over Hickory Valley Road (not an intersection, but looks like one on the map)
         result = geochatt.get_intersection_coordinates(name="Exit Interstate 75 Off Ramp & Hickory Valley Rd")        

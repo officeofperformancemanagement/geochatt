@@ -2,6 +2,7 @@ import csv
 import gzip
 import json
 import os
+import re
 import zipfile
 
 from shapely import from_wkt, STRtree
@@ -246,6 +247,21 @@ def get_intersection_coordinates(name):
         name = name.replace(" at ", " & ")
     elif name.count(" and ") != 0:
         name = name.replace(" and ", " & ")
+
+    # If the user input a direction for either of the street names, remove it
+    streets = name.split(" & ")
+    fixed = []
+    for street in streets:
+        contains_direction = r"\b[NESW]+\b\s|\s\b[NESW]+\b"
+        if bool(re.search(contains_direction, street)):
+            street = re.sub(contains_direction, "", street)
+        fixed.append(street)
+    
+    # Make sure the streets are in alphabetical order
+    fixed.sort()
+
+    # Put the street names back together
+    name = " & ".join(fixed)
 
     coordinates = []
     # Access intersection coords using name as key into intersections dictionary

@@ -14,3 +14,6 @@ python prepare_parcels.py
 
 # download neighborhoods
 python prepare_neighborhoods.py
+
+# download intersections
+python prepare_intersections.py
