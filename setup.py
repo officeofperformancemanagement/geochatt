@@ -14,8 +14,10 @@ setup(
         "geochatt": [
             "__init__.py",
             "city_council_districts.geojson",
+            "intersections.csv.gz",
             "live_parcels.csv.gz",
             "municipalities.geojson",
+            "neighborhoods.csv.gz",
             "zipcodes.geojson",
         ]
     },
