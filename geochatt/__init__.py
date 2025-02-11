@@ -79,9 +79,7 @@ def get_address(longitude, latitude, max_distance=0.0001):
 
 # Create Dict that has addresses as keys and parcels as values
 parcels = {}
-with gzip.open(
-    os.path.join(directory, "live_parcels.csv.gz"), "rt", newline=""
-) as f:
+with gzip.open(os.path.join(directory, "live_parcels.csv.gz"), "rt", newline="") as f:
     # Get address, parcel from each row and put them in Dict as key, value
     for row in csv.DictReader(f):
         if row["ADDRESS"]:
@@ -89,49 +87,206 @@ with gzip.open(
 
 # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
 cardinal_directions = {
-    "NORTH": "N", "NORTHEAST": "NE", "EAST": "E", "SOUTHEAST": "SE", 
-    "SOUTH": "S", "SOUTHWEST": "SW", "WEST": "W", "NORTHWEST": "NW"
+    "NORTH": "N",
+    "NORTHEAST": "NE",
+    "EAST": "E",
+    "SOUTHEAST": "SE",
+    "SOUTH": "S",
+    "SOUTHWEST": "SW",
+    "WEST": "W",
+    "NORTHWEST": "NW",
 }
 # Create dictionary that contains all USPS street suffixes and their abbreviations
 # Does not include suffixes that are not abbreviated (i.e., "ROW")
 # Link to information: https://pe.usps.com/text/pub28/28apc_002.htm
 street_suffixes = {
-    "ALLEY": "ALY", "ANNEX": "ANX", "ARCADE": "ARC", "AVENUE": "AVE", "BAYOU": "BYU", "BEACH": "BCH", 
-    "BEND": "BND", "BLUFF": "BLF", "BLUFFS": "BLFS", "BOTTOM": "BTM", "BOULEVARD": "BLVD", "BRANCH": "BR", 
-    "BRIDGE": "BRG", "BROOK": "BRK", "BROOKS": "BRKS", "BURG": "BG", "BURGS": "BGS", "BYPASS": "BYP", 
-    "CAMP": "CP", "CANYON": "CYN", "CAPE": "CPE", "CAUSEWAY": "CSWY", "CENTER": "CTR", "CENTERS": "CTRS", 
-    "CIRCLE": "CIR", "CIRCLES": "CIRS", "CLIFF": "CLF", "CLIFFS": "CLFS", "CLUB": "CLB", "COMMON": "CMN", 
-    "COMMONS": "CMNS", "CORNER": "COR", "CORNERS": "CORS", "COURSE": "CRSE", "COURT": "CT", "COURTS": "CTS", 
-    "COVE": "CV", "COVES": "CVS", "CREEK": "CRK", "CRESCENT": "CRES", "CREST": "CRST", "CROSSING": "XING", 
-    "CROSSROAD": "XRD", "CROSSROADS": "XRDS", "CURVE": "CURV", "DALE": "DL", "DAM": "DM", "DIVIDE": "DV", 
-    "DRIVE": "DR", "DRIVES": "DRS", "ESTATE": "EST", "ESTATES": "ESTS", "EXPRESSWAY": "EXPY", 
-    "EXTENSION": "EXT", "EXTENSIONS": "EXTS", "FALLS": "FLS", "FERRY": "FRY", "FIELD": "FLD", 
-    "FIELDS": "FLDS", "FLAT": "FLT", "FLATS": "FLTS", "FORD": "FRD", "FORDS": "FRDS", "FOREST": "FRST", 
-    "FORGE": "FRG", "FORGES": "FRGS", "FORK": "FRK", "FORKS": "FRKS", "FORT": "FT", "FREEWAY": "FWY", 
-    "GARDEN": "GDN", "GARDENS": "GDNS", "GATEWAY": "GTWY", "GLEN": "GLN", "GLENS": "GLNS", "GREEN": "GRN", 
-    "GREENS": "GRNS", "GROVE": "GRV", "GROVES": "GRVS", "HARBOR": "HBR", "HARBORS": "HBRS", "HAVEN": "HVN", 
-    "HEIGHTS": "HTS", "HIGHWAY": "HWY", "HILL": "HL", "HILLS": "HLS", "HOLLOW": "HOLW", "INLET": "INLT", 
-    "ISLAND": "IS", "ISLANDS": "ISS", "JUNCTION": "JCT", "JUNCTIONS": "JCTS", "KEY": "KY", 
-    "KEYS": "KYS", "KNOLL": "KNL", "LAKE": "LK", "LAKES": "LKS", "LANDING": "LNDG", 
-    "LANE": "LN", "LIGHT": "LGT", "LIGHTS": "LGTS", "LOAF": "LF", "LOCK": "LCK", "LOCKS": "LCKS", 
-    "LODGE": "LDG", "MANOR": "MNR", "MANORS": "MNRS", "MEADOW": "MDW", 
-    "MEADOWS": "MDWS", "MILL": "ML", "MILLS": "MLS", "MISSION": "MSN", "MOTORWAY": "MTWY", 
-    "MOUNT": "MT", "MOUNTAIN": "MTN", "MOUNTAINS": "MTNS", "NECK": "NCK", "ORCHARD": "ORCH", 
-    "OVERPASS": "OPAS", "PARKS": "PARK", "PARKWAY": "PKWY", "PARKWAYS": "PKWY", 
-    "PASSAGE": "PSGE", "PINE": "PNE", "PINES": "PNES", 
-    "PL": "PLACE", "PLAIN": "PLN", "PLAINS": "PLNS", "PLAZA": "PLZ", "POINT": "PT", "POINTS": "PTS", 
-    "PORT": "PRT", "PORTS": "PRTS", "PRAIRIE": "PR", "RADIAL": "RADL", "RANCH": "RNCH", 
-    "RAPID": "RPD", "RAPIDS": "RPDS", "REST": "RST", "RIDGE": "RDG", "RIDGES": "RDGS", "RIVER": "RIV", 
-    "ROAD": "RD", "ROADS": "RDS", "ROUTE": "RTE", "SHOAL": "SHL", 
-    "SHOALS": "SHLS", "SHORE": "SHR", "SHORES": "SHRS", "SKYWAY": "SKWY", "SPRING": "SPG", 
-    "SPRINGS": "SPGS", "SPURS": "SPUR", "SQUARE": "SQ", "SQUARES": "SQS", "STATION": "STA", 
-    "STRAVENUE": "STRA", "STREAM": "STRM", "STREET": "ST", "STREETS": "STS", "SUMMIT": "SMT", 
-    "TERRACE": "TER", "THROUGHWAY": "TRWY", "TRACE": "TRCE", "TRACK": "TRAK", "TRAFFICWAY": "TRFY", 
-    "TRAIL": "TRL", "TRAILER": "TRLR", "TUNNEL": "TUNL", "TURNPIKE": "TPKE", "UNDERPASS": "UPAS", 
-    "UNION": "UN", "UNIONS": "UNS", "VALLEY": "VLY", "VALLEYS": "VLYS", "VIADUCT": "VIA", "VIEW": "VW", 
-    "VIEWS": "VWS", "VILLAGE": "VLG", "VILLAGES": "VLGS", "VILLE": "VL", "VISTA": "VIS", 
-    "WALKS": "WALK", "WELL": "WL", "WELLS": "WLS"
+    "ALLEY": "ALY",
+    "ANNEX": "ANX",
+    "ARCADE": "ARC",
+    "AVENUE": "AVE",
+    "BAYOU": "BYU",
+    "BEACH": "BCH",
+    "BEND": "BND",
+    "BLUFF": "BLF",
+    "BLUFFS": "BLFS",
+    "BOTTOM": "BTM",
+    "BOULEVARD": "BLVD",
+    "BRANCH": "BR",
+    "BRIDGE": "BRG",
+    "BROOK": "BRK",
+    "BROOKS": "BRKS",
+    "BURG": "BG",
+    "BURGS": "BGS",
+    "BYPASS": "BYP",
+    "CAMP": "CP",
+    "CANYON": "CYN",
+    "CAPE": "CPE",
+    "CAUSEWAY": "CSWY",
+    "CENTER": "CTR",
+    "CENTERS": "CTRS",
+    "CIRCLE": "CIR",
+    "CIRCLES": "CIRS",
+    "CLIFF": "CLF",
+    "CLIFFS": "CLFS",
+    "CLUB": "CLB",
+    "COMMON": "CMN",
+    "COMMONS": "CMNS",
+    "CORNER": "COR",
+    "CORNERS": "CORS",
+    "COURSE": "CRSE",
+    "COURT": "CT",
+    "COURTS": "CTS",
+    "COVE": "CV",
+    "COVES": "CVS",
+    "CREEK": "CRK",
+    "CRESCENT": "CRES",
+    "CREST": "CRST",
+    "CROSSING": "XING",
+    "CROSSROAD": "XRD",
+    "CROSSROADS": "XRDS",
+    "CURVE": "CURV",
+    "DALE": "DL",
+    "DAM": "DM",
+    "DIVIDE": "DV",
+    "DRIVE": "DR",
+    "DRIVES": "DRS",
+    "ESTATE": "EST",
+    "ESTATES": "ESTS",
+    "EXPRESSWAY": "EXPY",
+    "EXTENSION": "EXT",
+    "EXTENSIONS": "EXTS",
+    "FALLS": "FLS",
+    "FERRY": "FRY",
+    "FIELD": "FLD",
+    "FIELDS": "FLDS",
+    "FLAT": "FLT",
+    "FLATS": "FLTS",
+    "FORD": "FRD",
+    "FORDS": "FRDS",
+    "FOREST": "FRST",
+    "FORGE": "FRG",
+    "FORGES": "FRGS",
+    "FORK": "FRK",
+    "FORKS": "FRKS",
+    "FORT": "FT",
+    "FREEWAY": "FWY",
+    "GARDEN": "GDN",
+    "GARDENS": "GDNS",
+    "GATEWAY": "GTWY",
+    "GLEN": "GLN",
+    "GLENS": "GLNS",
+    "GREEN": "GRN",
+    "GREENS": "GRNS",
+    "GROVE": "GRV",
+    "GROVES": "GRVS",
+    "HARBOR": "HBR",
+    "HARBORS": "HBRS",
+    "HAVEN": "HVN",
+    "HEIGHTS": "HTS",
+    "HIGHWAY": "HWY",
+    "HILL": "HL",
+    "HILLS": "HLS",
+    "HOLLOW": "HOLW",
+    "INLET": "INLT",
+    "ISLAND": "IS",
+    "ISLANDS": "ISS",
+    "JUNCTION": "JCT",
+    "JUNCTIONS": "JCTS",
+    "KEY": "KY",
+    "KEYS": "KYS",
+    "KNOLL": "KNL",
+    "LAKE": "LK",
+    "LAKES": "LKS",
+    "LANDING": "LNDG",
+    "LANE": "LN",
+    "LIGHT": "LGT",
+    "LIGHTS": "LGTS",
+    "LOAF": "LF",
+    "LOCK": "LCK",
+    "LOCKS": "LCKS",
+    "LODGE": "LDG",
+    "MANOR": "MNR",
+    "MANORS": "MNRS",
+    "MEADOW": "MDW",
+    "MEADOWS": "MDWS",
+    "MILL": "ML",
+    "MILLS": "MLS",
+    "MISSION": "MSN",
+    "MOTORWAY": "MTWY",
+    "MOUNT": "MT",
+    "MOUNTAIN": "MTN",
+    "MOUNTAINS": "MTNS",
+    "NECK": "NCK",
+    "ORCHARD": "ORCH",
+    "OVERPASS": "OPAS",
+    "PARKS": "PARK",
+    "PARKWAY": "PKWY",
+    "PARKWAYS": "PKWY",
+    "PASSAGE": "PSGE",
+    "PINE": "PNE",
+    "PINES": "PNES",
+    "PL": "PLACE",
+    "PLAIN": "PLN",
+    "PLAINS": "PLNS",
+    "PLAZA": "PLZ",
+    "POINT": "PT",
+    "POINTS": "PTS",
+    "PORT": "PRT",
+    "PORTS": "PRTS",
+    "PRAIRIE": "PR",
+    "RADIAL": "RADL",
+    "RANCH": "RNCH",
+    "RAPID": "RPD",
+    "RAPIDS": "RPDS",
+    "REST": "RST",
+    "RIDGE": "RDG",
+    "RIDGES": "RDGS",
+    "RIVER": "RIV",
+    "ROAD": "RD",
+    "ROADS": "RDS",
+    "ROUTE": "RTE",
+    "SHOAL": "SHL",
+    "SHOALS": "SHLS",
+    "SHORE": "SHR",
+    "SHORES": "SHRS",
+    "SKYWAY": "SKWY",
+    "SPRING": "SPG",
+    "SPRINGS": "SPGS",
+    "SPURS": "SPUR",
+    "SQUARE": "SQ",
+    "SQUARES": "SQS",
+    "STATION": "STA",
+    "STRAVENUE": "STRA",
+    "STREAM": "STRM",
+    "STREET": "ST",
+    "STREETS": "STS",
+    "SUMMIT": "SMT",
+    "TERRACE": "TER",
+    "THROUGHWAY": "TRWY",
+    "TRACE": "TRCE",
+    "TRACK": "TRAK",
+    "TRAFFICWAY": "TRFY",
+    "TRAIL": "TRL",
+    "TRAILER": "TRLR",
+    "TUNNEL": "TUNL",
+    "TURNPIKE": "TPKE",
+    "UNDERPASS": "UPAS",
+    "UNION": "UN",
+    "UNIONS": "UNS",
+    "VALLEY": "VLY",
+    "VALLEYS": "VLYS",
+    "VIADUCT": "VIA",
+    "VIEW": "VW",
+    "VIEWS": "VWS",
+    "VILLAGE": "VLG",
+    "VILLAGES": "VLGS",
+    "VILLE": "VL",
+    "VISTA": "VIS",
+    "WALKS": "WALK",
+    "WELL": "WL",
+    "WELLS": "WLS",
 }
+
 
 # Description
 # - Returns the geometry of the parcel associated with a given address.
@@ -212,13 +367,18 @@ def get_neighborhood_associations(longitude, latitude):
             neighborhood_strtree["value"] = STRtree(
                 [geom for geom, name in neighborhood_strtree["geoms"].items()]
             )
-    
+
     # Make a Shapely Point out of the input coordinates
     point = Point(longitude, latitude)
     # Grab index of all geometries (neighborhood associations) that the point intersects
-    neighborhood_indices = neighborhood_strtree["value"].query(point, predicate="intersects")
+    neighborhood_indices = neighborhood_strtree["value"].query(
+        point, predicate="intersects"
+    )
     # Grab actual geometries of neighborhoods intersecting point and store them in list
-    neighborhood_geometries = [neighborhood_strtree["value"].geometries[index] for index in neighborhood_indices]
+    neighborhood_geometries = [
+        neighborhood_strtree["value"].geometries[index]
+        for index in neighborhood_indices
+    ]
     # Create the list of neighborhoods associated with the point by indexing "geoms" with neighborhood geoms
     neighborhoods = [neighborhood_strtree["geoms"][g] for g in neighborhood_geometries]
     # Return result
@@ -226,9 +386,7 @@ def get_neighborhood_associations(longitude, latitude):
 
 
 # Open the intersections.csv.gz file and grab the first (and only) row containing the intersection data
-with gzip.open(
-    os.path.join(directory, "intersections.csv.gz"), "rt", newline=""
-) as f:
+with gzip.open(os.path.join(directory, "intersections.csv.gz"), "rt", newline="") as f:
     r = csv.DictReader(f)
     intersections = next(r)
 
@@ -256,7 +414,7 @@ def get_intersection_coordinates(name):
         if bool(re.search(contains_direction, street)):
             street = re.sub(contains_direction, "", street)
         fixed.append(street)
-    
+
     # Make sure the streets are in alphabetical order
     fixed.sort()
 

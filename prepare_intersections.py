@@ -35,7 +35,7 @@ for i in range(1_000_000_000_000):
     # Load the response data as JSON (dictionary)
     response_data = json.loads(content)
 
-    #print(response_data["features"])#
+    # print(response_data["features"])#
 
     # If this is less than 2,000 after the following "for" loop, then this is the last page of results
     count_features = 0
@@ -49,7 +49,7 @@ for i in range(1_000_000_000_000):
         if feature["geometry"]["type"] == "LineString":
             geometry = shapely.LineString(feature["geometry"]["coordinates"])
         elif feature["geometry"]["type"] == "MultiLineString":
-            geometry = shapely.MultiLineString(feature["geometry"]["coordinates"])            
+            geometry = shapely.MultiLineString(feature["geometry"]["coordinates"])
         # Add to dictionary
         line_strings[geometry] = name
         # Increment count_features
@@ -93,11 +93,16 @@ for geom in linestring_strtree["geoms"]:
     for endpt in endpoints:
         endpoint = shapely.Point(endpt)
         # Get the indices of the touching geometries
-        touching_indices = linestring_strtree["value"].query(endpoint, predicate="touches")
+        touching_indices = linestring_strtree["value"].query(
+            endpoint, predicate="touches"
+        )
         # There may not be any touching geometries - only run the following code if there are any
         if len(touching_indices) >= 1:
             # Get the actual touching geometries
-            touching_geometries = [linestring_strtree["value"].geometries[index] for index in touching_indices]
+            touching_geometries = [
+                linestring_strtree["value"].geometries[index]
+                for index in touching_indices
+            ]
             # Get the coordinate of the intersection with the first touching geometry
             intersection_coordinate = endpoint.intersection(touching_geometries[0])
             # Gather all the street names associated with the intersection
