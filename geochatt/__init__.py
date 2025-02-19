@@ -195,9 +195,17 @@ neighborhood_strtree = {"value": None, "geoms": {}}
 # Accepts
 # - longitude: the longitude (y-) coordinate of the input point (can be raw number or string)
 # - latitude: the latitude (x-) coordinate of the input point (can be raw number or string)
+# - parcel: the WKT polygon of the input parcel (optional and will override latitude/longitude)
 # Returns
 # - neighborhoods (list of str): the names of the neighborhood associations - empty if N/A
-def get_neighborhood_associations(longitude, latitude):
+def get_neighborhood_associations(longitude=None, latitude=None, parcel=None):
+    # Turn the parcel into a polygon that we can get the longitude and latitude of
+    if parcel is not None:
+        polygon = from_wkt(parcel)
+        # Save longitude and latitude
+        longitude = polygon.centroid.x
+        latitude = polygon.centroid.y
+
     # Load address index for tree upon first run of the function
     if neighborhood_strtree["value"] is None:
         with gzip.open(
