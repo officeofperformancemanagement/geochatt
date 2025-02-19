@@ -3,13 +3,16 @@ import unittest
 
 import geochatt
 
+
 class TestCityHall(unittest.TestCase):
     def test_get_intersection_coordinates(self):
         # Test a real intersection - 11th St and Market St
-        result = geochatt.get_intersection_coordinates(name="Market St and 11th St")        
+        result = geochatt.get_intersection_coordinates(name="Market St and 11th St")
         self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
         # Test where I-75 passes over Hickory Valley Road (not an intersection, but looks like one on the map)
-        result = geochatt.get_intersection_coordinates(name="Exit Interstate 75 Off Ramp & Hickory Valley Rd")        
+        result = geochatt.get_intersection_coordinates(
+            name="Exit Interstate 75 Off Ramp & Hickory Valley Rd"
+        )
         self.assertEqual(result, None)
 
     # City Hall coordinates: 35.04379983455412, -85.30815077048146
@@ -20,18 +23,18 @@ class TestCityHall(unittest.TestCase):
         # Test with inputting parcel WKT polygon
         result = geochatt.get_neighborhood_associations(parcel=geochatt.get_parcel(address="101 E 11TH ST"))
         self.assertEqual(result, ["Martin Luther King Neighborhood Association"])
-    
+
     def test_get_parcel_centroid(self):
-            result = geochatt.get_parcel_centroid(address="101 EAST 11TH ST")
-            # Please Note: The centroid is printed so that its coordinates can be validated on geojson.io.
-            # Here is a link to the website: https://geojson.io/#map=2/0/20
-            # Go to Chattanooga Municipal Building (address above), click the teardrop-shaped icon on the right,
-            # and click in the middle of the property. The coordinates should be similar--not like a degree off.
-            # print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
-            # Test each point to see if results match previous tests
-            # These were the results collected in December of 2024, so changes to shapely could cause them to be unequal
-            self.assertEqual(result.x, -85.30739570641228)
-            self.assertEqual(result.y, 35.0436712625469)
+        result = geochatt.get_parcel_centroid(address="101 EAST 11TH ST")
+        # Please Note: The centroid is printed so that its coordinates can be validated on geojson.io.
+        # Here is a link to the website: https://geojson.io/#map=2/0/20
+        # Go to Chattanooga Municipal Building (address above), click the teardrop-shaped icon on the right,
+        # and click in the middle of the property. The coordinates should be similar--not like a degree off.
+        # print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
+        # Test each point to see if results match previous tests
+        # These were the results collected in December of 2024, so changes to shapely could cause them to be unequal
+        self.assertEqual(result.x, -85.30739570641228)
+        self.assertEqual(result.y, 35.0436712625469)
 
     def test_get_parcel(self):
         result = geochatt.get_parcel(address="101 east 11th street")
@@ -73,9 +76,11 @@ class TestPerformance(unittest.TestCase):
             y = ymin + random.random() * yrange
             geochatt.get_address(longitude=x, latitude=y)
             geochatt.get_parcel("101 E 11TH ST")
-            geochatt.get_neighborhood_associations(longitude="-85.30815077048146", latitude="35.04379983455412")
+            geochatt.get_neighborhood_associations(
+                longitude="-85.30815077048146", latitude="35.04379983455412"
+            )
             geochatt.get_intersection_coordinates(name="11th St & Market St")
 
-            
+
 if __name__ == "__main__":
     unittest.main()
