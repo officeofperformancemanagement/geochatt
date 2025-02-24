@@ -17,8 +17,14 @@ class TestCityHall(unittest.TestCase):
 
     # City Hall coordinates: 35.04379983455412, -85.30815077048146
     def test_get_neighborhood_associations(self):
+        # Test with manually inputting longitude and latitude
         result = geochatt.get_neighborhood_associations(
             longitude="-85.30815077048146", latitude="35.04379983455412"
+        )
+        self.assertEqual(result, ["Martin Luther King Neighborhood Association"])
+        # Test with inputting parcel WKT polygon
+        result = geochatt.get_neighborhood_associations(
+            parcel=geochatt.get_parcel(address="101 E 11TH ST")
         )
         self.assertEqual(result, ["Martin Luther King Neighborhood Association"])
 

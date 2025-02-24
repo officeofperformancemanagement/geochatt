@@ -350,9 +350,17 @@ neighborhood_strtree = {"value": None, "geoms": {}}
 # Accepts
 # - longitude: the longitude (y-) coordinate of the input point (can be raw number or string)
 # - latitude: the latitude (x-) coordinate of the input point (can be raw number or string)
+# - parcel: the WKT polygon of the input parcel (optional and will override latitude/longitude)
 # Returns
 # - neighborhoods (list of str): the names of the neighborhood associations - empty if N/A
-def get_neighborhood_associations(longitude, latitude):
+def get_neighborhood_associations(longitude=None, latitude=None, parcel=None):
+    # Turn the parcel into a polygon that we can get map with neighborhoods
+    if parcel is not None:
+        query_geom = from_wkt(parcel)
+    # Else, we just need to make a point out of the input longitude and latitude
+    else:
+        query_geom = Point(longitude, latitude)
+
     # Load address index for tree upon first run of the function
     if neighborhood_strtree["value"] is None:
         with gzip.open(
@@ -368,11 +376,9 @@ def get_neighborhood_associations(longitude, latitude):
                 [geom for geom, name in neighborhood_strtree["geoms"].items()]
             )
 
-    # Make a Shapely Point out of the input coordinates
-    point = Point(longitude, latitude)
     # Grab index of all geometries (neighborhood associations) that the point intersects
     neighborhood_indices = neighborhood_strtree["value"].query(
-        point, predicate="intersects"
+        query_geom, predicate="intersects"
     )
     # Grab actual geometries of neighborhoods intersecting point and store them in list
     neighborhood_geometries = [
