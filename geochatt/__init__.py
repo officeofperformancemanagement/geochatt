@@ -1,3 +1,4 @@
+import argparse
 import csv
 import gzip
 import json
@@ -435,3 +436,38 @@ def get_intersection_coordinates(name):
         coordinates.append(intersection.y)
         # Return list with coordinates
         return coordinates
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="geochatt",
+        description="Utility Functions for Working with Open GeoSpatial Data about Chattanooga",
+    )
+    parser.add_argument(
+        "method",
+        help='method to run, can be "get-address", "get-city-council-district", "get-parcel", "get-parcel-centroid", "get-zipcode"',
+    )
+    parser.add_argument("--address", type=str, help="address")
+    parser.add_argument("--latitude", type=float, help="latitude")
+    parser.add_argument("--longitude", type=float, help="latitude")
+    args = parser.parse_args()
+    # print("args:", args)
+
+    if args.method in ["get-address", "get_address"]:
+        print(get_address(latitude=args.latitude, longitude=args.longitude))
+    elif args.method in ["get-city-council-district", "get_city_council_district"]:
+        print(
+            get_city_council_district(latitude=args.latitude, longitude=args.longitude)
+        )
+    elif args.method in ["get-municipality", "get_municipality"]:
+        print(get_municipality(latitude=args.latitude, longitude=args.longitude))
+    elif args.method in ["get-zipcode", "get_zipcode"]:
+        print(get_zipcode(latitude=args.latitude, longitude=args.longitude))
+    elif args.method in ["get-parcel", "get_parcel"]:
+        print(get_parcel(address=args.address))
+    elif args.method in ["get-parcel-centroid", "get_parcel_centroid"]:
+        print(get_parcel_centroid(address=args.address))
+
+
+if __name__ == "__main__":
+    main()

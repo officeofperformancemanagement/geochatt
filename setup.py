@@ -21,6 +21,9 @@ setup(
             "zipcodes.geojson",
         ]
     },
+    entry_points={
+        "console_scripts": ["geochatt=geochatt.__init__:main"],
+    },
     version="0.1.0",
     description="Utility Functions for Working with Open GeoSpatial Data about Chattanooga",
     long_description=long_description,
