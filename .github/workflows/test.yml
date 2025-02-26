@@ -21,4 +21,4 @@ jobs:
 
       - run: python3 test.py
 
-      - run: sh test.sh
+      - run: bash test.sh

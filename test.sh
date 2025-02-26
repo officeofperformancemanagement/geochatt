@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 test_get_address () {
     result=$(geochatt get-address --latitude="35.0432979" --longitude="-85.3076591")
