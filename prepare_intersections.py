@@ -124,7 +124,9 @@ dictionary inside of intersection_data, there is only one row to write. The keys
 the fieldnames.
 """
 
-with gzip.open("./geochatt/intersections.csv.gz", "wt", newline="") as csvfile:
+with gzip.open(
+    "./geochatt/intersections.csv.gz", "wt", newline="", encoding="utf-8"
+) as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=intersection_data[0].keys())
     writer.writeheader()
     writer.writerows(intersection_data)

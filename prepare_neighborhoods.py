@@ -28,7 +28,9 @@ for row in data:
     rows.append(row_data)
 
 # Write to csv.gz
-with gzip.open("./geochatt/neighborhoods.csv.gz", "wt", newline="") as csvfile:
+with gzip.open(
+    "./geochatt/neighborhoods.csv.gz", "wt", newline="", encoding="utf-8"
+) as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=["name", "boundary"])
     writer.writeheader()
     writer.writerows(rows)

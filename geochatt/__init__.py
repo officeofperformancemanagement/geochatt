@@ -365,7 +365,10 @@ def get_neighborhood_associations(longitude=None, latitude=None, parcel=None):
     # Load address index for tree upon first run of the function
     if neighborhood_strtree["value"] is None:
         with gzip.open(
-            os.path.join(directory, "neighborhoods.csv.gz"), "rt", newline=""
+            os.path.join(directory, "neighborhoods.csv.gz"),
+            "rt",
+            newline="",
+            encoding="utf-8",
         ) as f:
             # Fill "geoms" dictionary with data from CSV in the format of "boundary": name
             for row in csv.DictReader(f):
@@ -393,7 +396,9 @@ def get_neighborhood_associations(longitude=None, latitude=None, parcel=None):
 
 
 # Open the intersections.csv.gz file and grab the first (and only) row containing the intersection data
-with gzip.open(os.path.join(directory, "intersections.csv.gz"), "rt", newline="") as f:
+with gzip.open(
+    os.path.join(directory, "intersections.csv.gz"), "rt", newline="", encoding="utf-8"
+) as f:
     r = csv.DictReader(f)
     intersections = next(r)
 
