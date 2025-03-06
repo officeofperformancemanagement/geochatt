@@ -44,7 +44,7 @@ for i in range(1_000_000_000_000):
     for feature in response_data["features"]:
         name = feature["properties"]["Name"]
         if feature["properties"]["TypeSuffix"] is not None:
-            name += " " + feature["properties"]["TypeSuffix"]
+            name += f"/{feature["properties"]["TypeSuffix"]}"
         # Some features are LineStrings while others are MultiLineString - make the appropriate Shapely object
         if feature["geometry"]["type"] == "LineString":
             geometry = shapely.LineString(feature["geometry"]["coordinates"])
@@ -109,14 +109,58 @@ for geom in linestring_strtree["geoms"]:
             street_names_list = []
             for t in touching_geometries:
                 street_names_list.append(linestring_strtree["geoms"][t])
+            # # Get all combinations of two street names from the street_names_list as a list
+            # street_combinations = list(itertools.combinations(street_names_list, 2))
+            # # For each combination, make a key out of it and set its value to the coordinate
+            # for combination in street_combinations:
+            #     # Format as "[Street1] & [Street2]"
+            #     intersection_name = f"{combination[0]} & {combination[1]}"
+            #     # Add to dictionary inside of intersection_data list
+            #     intersection_data[0][intersection_name] = intersection_coordinate
+            
+            """
+            We want to append a record to the dictionary for all possible permutations of the names.
+            For example, for A Rd and B St, there would be:
+                1. A & B
+                2. A Rd & B
+                3. A & B St
+                4. A Rd & B St
+                ...as well as the reverse order, so B Rd & A St, and so on.
+            The names are currently formated like name/suffix, so these would be A/Rd and B/St.
+            """
+
             # Get all combinations of two street names from the street_names_list as a list
             street_combinations = list(itertools.combinations(street_names_list, 2))
-            # For each combination, make a key out of it and set its value to the coordinate
+            # For each combination, save a key-value pair for each permutation and the coordinate
             for combination in street_combinations:
-                # Format as "[Street1] & [Street2]"
-                intersection_name = combination[0] + " & " + combination[1]
-                # Add to dictionary inside of intersection_data list
-                intersection_data[0][intersection_name] = intersection_coordinate
+                # s1: first street in combination
+                s1split = combination[0].split("/")
+                s1name = s1split[0] 
+                if len(s1split) > 1:
+                    s1suffix = s1split[1]
+                else:
+                    s1suffix = None
+                # s2: second street in combination
+                s2split = combination[1].split("/")
+                s2name = s2split[0]
+                if len(s2split) > 1:
+                    s2suffix = s2split[1]
+                else:
+                    s2suffix = None
+                # Permutations
+                perms = [
+                    f"{s1name} & {s2name}",
+                    f"{s1name} {s1suffix} & {s2name}",
+                    f"{s1name} & {s2name} {s2suffix}",
+                    f"{s1name} {s1suffix} & {s2name} {s2suffix}",
+                    f"{s2name} & {s1name}",
+                    f"{s2name} {s2suffix} & {s1name}",
+                    f"{s2name} & {s1name} {s1suffix}",
+                    f"{s2name} {s2suffix} & {s1name} {s1suffix}",
+                ]
+                # For each permutation, create the key-value pair in the intersection_data dictionary
+                for perm in perms:
+                    intersection_data[0][perm] = intersection_coordinate
 
 """
 Now, the data just needs to be written to a csv.gz file. Because all of the data is kept in a single

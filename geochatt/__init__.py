@@ -424,7 +424,25 @@ def get_intersection_coordinates(name):
     for street in streets:
         contains_direction = r"\b[NESW]+\b\s|\s\b[NESW]+\b"
         if bool(re.search(contains_direction, street)):
-            street = re.sub(contains_direction, "", street)
+            street = re.sub(contains_direction, "", street) 
+
+        # # If there is no suffix at the end of the street name, the correct one needs to be found and added
+        # last_word = street.split(" ")[-1].upper()
+        # if last_word not in street_suffixes and last_word not in street_suffixes.values():
+        #     match_found = False
+        #     for intersection in intersections:
+        #         i_streets = intersection.split(" & ")
+        #         for i_street in i_streets:
+        #             i_street_split = i_street.split(" ")
+        #             suffix = i_street_split.pop()
+        #             i_street = " ".join(i_street_split)
+        #             if i_street == street:
+        #                 street += f" {suffix}"
+        #                 match_found = True
+        #                 break
+        #         if match_found is True:
+        #             break
+        
         fixed.append(street)
 
     # Make sure the streets are in alphabetical order
