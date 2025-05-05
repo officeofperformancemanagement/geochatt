@@ -88,15 +88,39 @@ with gzip.open(os.path.join(directory, "live_parcels.csv.gz"), "rt", newline="")
 
 # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
 cardinal_directions = {
-    "NORTH": "N",
-    "NORTHEAST": "NE",
-    "EAST": "E",
-    "SOUTHEAST": "SE",
-    "SOUTH": "S",
-    "SOUTHWEST": "SW",
-    "WEST": "W",
-    "NORTHWEST": "NW",
+    " NORTH ": " N ",
+    " NORTHEAST ": " NE ",
+    " EAST ": " E ",
+    " SOUTHEAST ": " SE ",
+    " SOUTH ": " S ",
+    " SOUTHWEST ": " SW ",
+    " WEST ": " W ",
+    " NORTHWEST ": " NW ",
 }
+
+# # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
+# cardinal_directions = [
+#     r"\bNORTH\b"
+#     r"\bNORTHEAST\b"
+#     r"\bEAST\b"
+#     r"\bSOUTHEAST\b"
+#     r"\bSOUTH\b"
+#     r"\bSOUTHWEST\b"
+#     r"\bWEST\b"
+#     r"\bNORTHWEST\b"
+# ]
+
+# dir_abbreviations = [
+#     "N",
+#     "NE",
+#     "E",
+#     "SE",
+#     "S",
+#     "SW",
+#     "W",
+#     "NW"
+# ]
+
 # Create dictionary that contains all USPS street suffixes and their abbreviations
 # Does not include suffixes that are not abbreviated (i.e., "ROW")
 # Link to information: https://pe.usps.com/text/pub28/28apc_002.htm
