@@ -441,6 +441,8 @@ def get_intersection_coordinates(name):
         name = name.replace(" at ", " & ")
     elif name.count(" and ") != 0:
         name = name.replace(" and ", " & ")
+    elif name.count(" + ") != 0:
+        name = name.replace(" + ", " & ")
 
     # If the user input a direction for either of the street names, remove it
     streets = name.split(" & ")
