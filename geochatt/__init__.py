@@ -1,11 +1,13 @@
 import argparse
 import csv
+import datetime
 import gzip
 import json
 import os
 import re
 import zipfile
 
+# from datetime import datetime
 from shapely import from_wkt, STRtree
 from shapely.geometry import shape, Point
 
@@ -27,13 +29,19 @@ with open(os.path.join(directory, "municipalities.geojson")) as f:
             (shape(feature["geometry"]), feature["properties"]["NAME"])
         )
 
+old_city_council_districts_shapes = []
+with open(os.path.join(directory, "old_city_council_districts.geojson")) as f:
+    for feature in json.load(f)["features"]:
+        old_city_council_districts_shapes.append(
+            (shape(feature["geometry"]), int(float(feature["properties"]["citydst"])))
+        )
+
 city_council_districts_shapes = []
 with open(os.path.join(directory, "city_council_districts.geojson")) as f:
     for feature in json.load(f)["features"]:
         city_council_districts_shapes.append(
-            (shape(feature["geometry"]), int(float(feature["properties"]["citydst"])))
+            (shape(feature["geometry"]), int(float(feature["properties"]["council"])))
         )
-
 
 def _get_shape_(shapes, longitude, latitude):
     point = Point(longitude, latitude)
@@ -42,8 +50,19 @@ def _get_shape_(shapes, longitude, latitude):
             return value
 
 
-def get_city_council_district(longitude, latitude):
-    return _get_shape_(city_council_districts_shapes, longitude, latitude)
+def get_city_council_district(longitude, latitude, date=None):
+    # If the user inputs a date (must be MM-DD-YYYY), try to make a date object out of it
+    try:
+        date_obj = datetime.datetime.strptime(date, "%m-%d-%Y").date()
+    except Exception:
+        # If exception, default to current council district boundaries
+        return _get_shape_(city_council_districts_shapes, longitude, latitude)
+    else:
+        # If before April 14, 2025, use old council district boundaries
+        if date_obj < datetime.date(2025, 4, 14):
+            return _get_shape_(old_city_council_districts_shapes, longitude, latitude)
+        else:
+            return _get_shape_(city_council_districts_shapes, longitude, latitude)
 
 
 def get_municipality(longitude, latitude):
