@@ -343,6 +343,9 @@ def get_parcel(address):
     check_addr = address.upper()
     # Make a list of acceptable address strings - ["EAST 11TH STREET", "E 11TH STREET"], for example
     acceptable = [check_addr]
+    # The user may have input a city, State, and/or ZIP code following a comma after the suffix
+    additional_info = re.compile(r",.*")
+    check_addr = re.sub(additional_info, "", check_addr)
     # Check the input string for each of the cardinal directions
     dir_normalized = None
     for dir, abbrev in cardinal_directions.items():
@@ -365,10 +368,10 @@ def get_parcel(address):
     acceptable.append(normalized)
     # For debugging: print("ACCEPTABLE LIST: ", acceptable)
     # Grab the parcel associated with address from "parcels" Dict
+    # print(acceptable)
     for addr in acceptable:
         if addr in parcels:
             return parcels[addr]
-
 
 # Description
 # - Returns the centroid of the parcel located at the input address
@@ -392,8 +395,8 @@ neighborhood_strtree = {"value": None, "geoms": {}}
 # Description
 # - Returns the neighborhood associations that the input coordinates' point is in, if applicable.
 # Accepts
-# - longitude: the longitude (y-) coordinate of the input point (can be raw number or string)
-# - latitude: the latitude (x-) coordinate of the input point (can be raw number or string)
+# - longitude: the longitude (x-) coordinate of the input point (can be raw number or string)
+# - latitude: the latitude (y-) coordinate of the input point (can be raw number or string)
 # - parcel: the WKT polygon of the input parcel (optional and will override latitude/longitude)
 # Returns
 # - neighborhoods (list of str): the names of the neighborhood associations - empty if N/A
