@@ -9,6 +9,18 @@ class TestCityHall(unittest.TestCase):
         # Test a real intersection - 11th St and Market St
         result = geochatt.get_intersection_coordinates(name="Market St and 11th St")
         self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
+
+    def test_get_intersection_coordinates_ampersand(self):
+        # Test a real intersection - 11th St and Market St
+        result = geochatt.get_intersection_coordinates(name="Market St & 11th St")
+        self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
+
+    def test_get_intersection_coordinates_without_suffix(self):
+        # Test a real intersection - 11th St and Market St
+        result = geochatt.get_intersection_coordinates(name="Market and 11th")
+        self.assertEqual(result, [-85.30934947677113, 35.04392856867984])
+
+    def test_get_intersection_coordinates_pass_over(self):
         # Test where I-75 passes over Hickory Valley Road (not an intersection, but looks like one on the map)
         result = geochatt.get_intersection_coordinates(
             name="Exit Interstate 75 Off Ramp & Hickory Valley Rd"
@@ -41,7 +53,7 @@ class TestCityHall(unittest.TestCase):
         self.assertEqual(result.y, 35.0436712625469)
 
     def test_get_parcel(self):
-        result = geochatt.get_parcel(address="101 east 11th street")
+        result = geochatt.get_parcel(address="101 east 11th street,chattanooga, tn, 37402")
         self.assertEqual(
             result,
             "POLYGON ((-85.3069572 35.043897, -85.3074818 35.0440926, -85.3075952 35.0438743, -85.3078311 35.0434433, -85.3073192 35.0432494, -85.3069718 35.0438707, -85.3069572 35.043897))",

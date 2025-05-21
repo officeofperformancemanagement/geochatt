@@ -1,11 +1,13 @@
 import argparse
 import csv
+import datetime
 import gzip
 import json
 import os
 import re
 import zipfile
 
+# from datetime import datetime
 from shapely import from_wkt, STRtree
 from shapely.geometry import shape, Point
 
@@ -27,13 +29,19 @@ with open(os.path.join(directory, "municipalities.geojson")) as f:
             (shape(feature["geometry"]), feature["properties"]["NAME"])
         )
 
+old_city_council_districts_shapes = []
+with open(os.path.join(directory, "old_city_council_districts.geojson")) as f:
+    for feature in json.load(f)["features"]:
+        old_city_council_districts_shapes.append(
+            (shape(feature["geometry"]), int(float(feature["properties"]["citydst"])))
+        )
+
 city_council_districts_shapes = []
 with open(os.path.join(directory, "city_council_districts.geojson")) as f:
     for feature in json.load(f)["features"]:
         city_council_districts_shapes.append(
-            (shape(feature["geometry"]), int(float(feature["properties"]["citydst"])))
+            (shape(feature["geometry"]), int(float(feature["properties"]["council"])))
         )
-
 
 def _get_shape_(shapes, longitude, latitude):
     point = Point(longitude, latitude)
@@ -42,8 +50,19 @@ def _get_shape_(shapes, longitude, latitude):
             return value
 
 
-def get_city_council_district(longitude, latitude):
-    return _get_shape_(city_council_districts_shapes, longitude, latitude)
+def get_city_council_district(longitude, latitude, date=None):
+    # If the user inputs a date (must be MM-DD-YYYY), try to make a date object out of it
+    try:
+        date_obj = datetime.datetime.strptime(date, "%m-%d-%Y").date()
+    except Exception:
+        # If exception, default to current council district boundaries
+        return _get_shape_(city_council_districts_shapes, longitude, latitude)
+    else:
+        # If before April 14, 2025, use old council district boundaries
+        if date_obj < datetime.date(2025, 4, 14):
+            return _get_shape_(old_city_council_districts_shapes, longitude, latitude)
+        else:
+            return _get_shape_(city_council_districts_shapes, longitude, latitude)
 
 
 def get_municipality(longitude, latitude):
@@ -88,15 +107,39 @@ with gzip.open(os.path.join(directory, "live_parcels.csv.gz"), "rt", newline="")
 
 # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
 cardinal_directions = {
-    "NORTH": "N",
-    "NORTHEAST": "NE",
-    "EAST": "E",
-    "SOUTHEAST": "SE",
-    "SOUTH": "S",
-    "SOUTHWEST": "SW",
-    "WEST": "W",
-    "NORTHWEST": "NW",
+    " NORTH ": " N ",
+    " NORTHEAST ": " NE ",
+    " EAST ": " E ",
+    " SOUTHEAST ": " SE ",
+    " SOUTH ": " S ",
+    " SOUTHWEST ": " SW ",
+    " WEST ": " W ",
+    " NORTHWEST ": " NW ",
 }
+
+# # Create dictionary of cardinal directions that may appear in addresses with their abbreviations
+# cardinal_directions = [
+#     r"\bNORTH\b"
+#     r"\bNORTHEAST\b"
+#     r"\bEAST\b"
+#     r"\bSOUTHEAST\b"
+#     r"\bSOUTH\b"
+#     r"\bSOUTHWEST\b"
+#     r"\bWEST\b"
+#     r"\bNORTHWEST\b"
+# ]
+
+# dir_abbreviations = [
+#     "N",
+#     "NE",
+#     "E",
+#     "SE",
+#     "S",
+#     "SW",
+#     "W",
+#     "NW"
+# ]
+
 # Create dictionary that contains all USPS street suffixes and their abbreviations
 # Does not include suffixes that are not abbreviated (i.e., "ROW")
 # Link to information: https://pe.usps.com/text/pub28/28apc_002.htm
@@ -300,6 +343,9 @@ def get_parcel(address):
     check_addr = address.upper()
     # Make a list of acceptable address strings - ["EAST 11TH STREET", "E 11TH STREET"], for example
     acceptable = [check_addr]
+    # The user may have input a city, State, and/or ZIP code following a comma after the suffix
+    additional_info = re.compile(r",.*")
+    check_addr = re.sub(additional_info, "", check_addr)
     # Check the input string for each of the cardinal directions
     dir_normalized = None
     for dir, abbrev in cardinal_directions.items():
@@ -322,10 +368,10 @@ def get_parcel(address):
     acceptable.append(normalized)
     # For debugging: print("ACCEPTABLE LIST: ", acceptable)
     # Grab the parcel associated with address from "parcels" Dict
+    # print(acceptable)
     for addr in acceptable:
         if addr in parcels:
             return parcels[addr]
-
 
 # Description
 # - Returns the centroid of the parcel located at the input address
@@ -349,8 +395,8 @@ neighborhood_strtree = {"value": None, "geoms": {}}
 # Description
 # - Returns the neighborhood associations that the input coordinates' point is in, if applicable.
 # Accepts
-# - longitude: the longitude (y-) coordinate of the input point (can be raw number or string)
-# - latitude: the latitude (x-) coordinate of the input point (can be raw number or string)
+# - longitude: the longitude (x-) coordinate of the input point (can be raw number or string)
+# - latitude: the latitude (y-) coordinate of the input point (can be raw number or string)
 # - parcel: the WKT polygon of the input parcel (optional and will override latitude/longitude)
 # Returns
 # - neighborhoods (list of str): the names of the neighborhood associations - empty if N/A
@@ -417,6 +463,8 @@ def get_intersection_coordinates(name):
         name = name.replace(" at ", " & ")
     elif name.count(" and ") != 0:
         name = name.replace(" and ", " & ")
+    elif name.count(" + ") != 0:
+        name = name.replace(" + ", " & ")
 
     # If the user input a direction for either of the street names, remove it
     streets = name.split(" & ")
@@ -424,7 +472,25 @@ def get_intersection_coordinates(name):
     for street in streets:
         contains_direction = r"\b[NESW]+\b\s|\s\b[NESW]+\b"
         if bool(re.search(contains_direction, street)):
-            street = re.sub(contains_direction, "", street)
+            street = re.sub(contains_direction, "", street) 
+
+        # # If there is no suffix at the end of the street name, the correct one needs to be found and added
+        # last_word = street.split(" ")[-1].upper()
+        # if last_word not in street_suffixes and last_word not in street_suffixes.values():
+        #     match_found = False
+        #     for intersection in intersections:
+        #         i_streets = intersection.split(" & ")
+        #         for i_street in i_streets:
+        #             i_street_split = i_street.split(" ")
+        #             suffix = i_street_split.pop()
+        #             i_street = " ".join(i_street_split)
+        #             if i_street == street:
+        #                 street += f" {suffix}"
+        #                 match_found = True
+        #                 break
+        #         if match_found is True:
+        #             break
+        
         fixed.append(street)
 
     # Make sure the streets are in alphabetical order
