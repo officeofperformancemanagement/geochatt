@@ -117,7 +117,7 @@ for geom in linestring_strtree["geoms"]:
             #     intersection_name = f"{combination[0]} & {combination[1]}"
             #     # Add to dictionary inside of intersection_data list
             #     intersection_data[0][intersection_name] = intersection_coordinate
-            
+
             """
             We want to append a record to the dictionary for all possible permutations of the names.
             For example, for A Rd and B St, there would be:
@@ -135,7 +135,7 @@ for geom in linestring_strtree["geoms"]:
             for combination in street_combinations:
                 # s1: first street in combination
                 s1split = combination[0].split("/")
-                s1name = s1split[0] 
+                s1name = s1split[0]
                 if len(s1split) > 1:
                     s1suffix = s1split[1]
                 else:
