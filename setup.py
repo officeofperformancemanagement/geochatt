@@ -24,7 +24,7 @@ setup(
     entry_points={
         "console_scripts": ["geochatt=geochatt.__init__:main"],
     },
-    version="0.2.0",
+    version="0.3.0",
     description="Utility Functions for Working with Open GeoSpatial Data about Chattanooga",
     long_description=long_description,
     long_description_content_type="text/markdown",
