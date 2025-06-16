@@ -23,5 +23,7 @@ jobs:
 
       - run: python3 prepare_parcels.py
 
+      - run: python3 prepare_neighborhoods.py
+
       # Commit all changed files back to the repository
       # - uses: stefanzweifel/git-auto-commit-action@v5

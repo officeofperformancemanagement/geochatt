@@ -43,6 +43,7 @@ with open(os.path.join(directory, "city_council_districts.geojson")) as f:
             (shape(feature["geometry"]), int(float(feature["properties"]["council"])))
         )
 
+
 def _get_shape_(shapes, longitude, latitude):
     point = Point(longitude, latitude)
     for shape, value in shapes:
@@ -373,6 +374,7 @@ def get_parcel(address):
         if addr in parcels:
             return parcels[addr]
 
+
 # Description
 # - Returns the centroid of the parcel located at the input address
 # Accepts
@@ -472,7 +474,7 @@ def get_intersection_coordinates(name):
     for street in streets:
         contains_direction = r"\b[NESW]+\b\s|\s\b[NESW]+\b"
         if bool(re.search(contains_direction, street)):
-            street = re.sub(contains_direction, "", street) 
+            street = re.sub(contains_direction, "", street)
 
         # # If there is no suffix at the end of the street name, the correct one needs to be found and added
         # last_word = street.split(" ")[-1].upper()
@@ -490,7 +492,7 @@ def get_intersection_coordinates(name):
         #                 break
         #         if match_found is True:
         #             break
-        
+
         fixed.append(street)
 
     # Make sure the streets are in alphabetical order

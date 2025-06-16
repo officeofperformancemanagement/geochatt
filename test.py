@@ -49,14 +49,16 @@ class TestCityHall(unittest.TestCase):
         # print("RESULT OF TEST_GET_PARCEL_CENTROID (101 EAST 11TH ST): ", result)
         # Test each point to see if results match previous tests
         # These were the results collected in December of 2024, so changes to shapely could cause them to be unequal
-        self.assertEqual(result.x, -85.30739570641228)
-        self.assertEqual(result.y, 35.0436712625469)
+        self.assertEqual(result.x, -85.30739572212372)
+        self.assertEqual(result.y, 35.04367132154845)
 
     def test_get_parcel(self):
-        result = geochatt.get_parcel(address="101 east 11th street,chattanooga, tn, 37402")
+        result = geochatt.get_parcel(
+            address="101 east 11th street,chattanooga, tn, 37402"
+        )
         self.assertEqual(
             result,
-            "POLYGON ((-85.3069572 35.043897, -85.3074818 35.0440926, -85.3075952 35.0438743, -85.3078311 35.0434433, -85.3073192 35.0432494, -85.3069718 35.0438707, -85.3069572 35.043897))",
+            "POLYGON ((-85.3069572 35.0438971, -85.3074818 35.0440927, -85.3075952 35.0438743, -85.3078312 35.0434434, -85.3073193 35.0432494, -85.3069718 35.0438707, -85.3069572 35.0438971))",
         )
 
     def test_get_address(self):
