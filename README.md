@@ -36,6 +36,22 @@ geochatt.get_parcel(address="101 E 11TH ST")
 # get_parcel_centroid returns a Shapely Point object
 geochatt.get_parcel_centroid(address="101 E 11TH ST")
 <POINT (-85.307 35.044)>
+
+# get_neighborhood_associations returns a list of Chattanooga neighborhood associations (empty if the point is not in any)
+geochatt.get_neighborhood_associations(longitude=-85.307, latitude=35.044)
+['Martin Luther King Neighborhood Association']
+
+# parcel will override longitude and latitude if all three fields are used
+geochatt.get_neighborhood_associations(parcel=geochatt.get_parcel(address="101 E 11TH ST"))
+['Martin Luther King Neighborhood Association']
+
+# get_intersection_coordinates returns a list like: [longitude (x), latitude (y)]
+geochatt.get_intersection_coordinates(name="Market St & 11th St")
+[-85.30934947677113, 35.04392856867984]
+
+# The function also accepts "+", "at", and "and" as separators between street names - additionally, the suffixes are not required
+geochatt.get_intersection_coordinates(name="Market and 11th")
+[-85.30934947677113, 35.04392856867984]
 ```
 
 ## cli usage
